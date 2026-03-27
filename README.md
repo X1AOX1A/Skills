@@ -6,8 +6,8 @@ Centralized skill management for AI coding tools (Claude Code, Codex CLI, Cursor
 
 | Skill | Description |
 |-------|-------------|
-| **search-paper** | Online paper discovery via HuggingFace Papers API. Search by keyword, browse daily/trending papers, get paper details (authors, abstract, GitHub), and read full text by arXiv ID. |
-| **read-paper** | Read and work with local paper folders exported by ZoFiles. Each folder contains structured files: `paper.md`, `paper.bib`, `kimi.md`, etc. |
+| **read-paper-online** | Online paper discovery via HuggingFace Papers API. Search by keyword, browse daily/trending papers, get paper details (authors, abstract, GitHub), and read full text by arXiv ID. |
+| **read-paper-local** | Read and work with local paper folders exported by ZoFiles. Each folder contains structured files: `paper.md`, `paper.bib`, `kimi.md`, etc. |
 | **zotero-connector** | Import arXiv papers into a running Zotero instance. Supports batch import, duplicate detection, and collection targeting. |
 | **pdf-to-markdown** | Convert PDF files to clean Markdown using pymupdf4llm. |
 | **nano-banana-pro** | Generate and edit images using Google's Nano Banana Pro (Gemini 3 Pro Image) API. Supports text-to-image and image-to-image editing. |
@@ -16,9 +16,9 @@ Centralized skill management for AI coding tools (Claude Code, Codex CLI, Cursor
 
 ```
 skills/                  # Skill definitions (source of truth)
-  ├── search-paper/
+  ├── read-paper-online/
   │   └── SKILL.md
-  ├── read-paper/
+  ├── read-paper-local/
   │   └── SKILL.md
   ├── zotero-connector/
   │   ├── SKILL.md
@@ -63,8 +63,8 @@ Controls which skills are deployed to which tools. Set `1` to enable, `0` to dis
 
 ```csv
 skill, claude, codex, cursor
-search-paper, 1, 1, 1
-read-paper, 1, 1, 1
+read-paper-online, 1, 1, 1
+read-paper-local, 1, 1, 1
 zotero-connector, 1, 1, 1
 pdf-to-markdown, 1, 1, 1
 nano-banana-pro, 1, 1, 1

@@ -1,12 +1,14 @@
 ---
-name: search-paper
+name: read-paper-online
 description: |
-  Search for academic papers online using HuggingFace Papers API and optionally read their full text.
+  Search, browse, and read academic papers online using HuggingFace Papers API and arxiv2md.
   TRIGGER when: user asks to search for papers online, find recent papers, look up papers on a topic,
   search arXiv/HuggingFace for papers, check what's new in a research area, browse HuggingFace daily papers,
-  get detailed info about a specific paper (authors, abstract, keywords, github), or quickly read a paper's full text by arXiv ID.
-  DO NOT TRIGGER when: user wants to read a local paper folder (use read-paper skill), import papers into Zotero
-  (use zotero-connector skill), convert a local PDF (use pdf-to-markdown skill), or work with already-downloaded papers.
+  get detailed info about a specific paper (authors, abstract, keywords, github), read a paper's full text
+  by arXiv ID online, or download a paper as markdown.
+  DO NOT TRIGGER when: user wants to read a local paper folder or paper already downloaded locally
+  (use read-paper-local skill), import papers into Zotero (use zotero-connector skill),
+  or convert a local PDF (use pdf-to-markdown skill).
 ---
 
 # Online Paper Search
@@ -16,6 +18,7 @@ Search for academic papers via the HuggingFace Papers hub using the `hf` CLI. Th
 ## Prerequisites
 
 - `huggingface_hub` CLI installed (`pip install -U huggingface_hub[cli]`)
+- `scripts/arxiv2md.sh` (bundled with this skill, requires `curl` + `python3`)
 - Internet connection
 
 ## 1. Searching Papers
@@ -120,29 +123,36 @@ hf papers info 2509.22624
 
 ## 4. Reading Paper Full Text
 
-```bash
-hf papers read <PAPER_ID>
-```
+Two tools are available for fetching paper full text. **Always try `arxiv2md.sh` first** — it produces higher-quality markdown (with frontmatter, ToC, proper formatting). Fall back to `hf papers read` only if `arxiv2md.sh` fails.
 
-Fetches the paper's full text as markdown from its arXiv HTML rendering. Use this when the user wants to:
-
-- Quickly preview a paper found via search without downloading
-- Read specific sections of an online paper
-- Get the full content for summarization or analysis
-
-**Example:**
+### Primary: arxiv2md.sh (preferred)
 
 ```bash
-hf papers read 2301.07041
+# Save to file (recommended for large papers)
+bash scripts/arxiv2md.sh <PAPER_ID> -o /tmp/papers/<ID>.md
+
+# Output to stdout
+bash scripts/arxiv2md.sh <PAPER_ID>
 ```
+
+Uses the arxiv2md.org API to convert arXiv papers to well-structured markdown with YAML frontmatter, table of contents, and clean formatting. Accepts either a bare arXiv ID (e.g. `2301.07041`) or a full URL.
+
+### Fallback: hf papers read
+
+```bash
+hf papers read <PAPER_ID> > /tmp/papers/<ID>.md
+```
+
+If `arxiv2md.sh` fails (network error, API timeout, unsupported paper format), use `hf papers read` as a fallback. It fetches the paper's full text from arXiv's HTML rendering — functional but less polished than arxiv2md output.
 
 ### Reading Strategy for Full Papers
 
-Since `hf papers read` outputs can be very long, follow this strategy:
+Since paper outputs can be very long, follow this strategy:
 
-1. **Pipe to a temp file** for large papers so you can read selectively:
+1. **Save to a temp file** so you can read selectively:
    ```bash
-   hf papers read <ID> > /tmp/papers/<ID>.md
+   mkdir -p /tmp/papers
+   bash scripts/arxiv2md.sh <ID> -o /tmp/papers/<ID>.md
    ```
 2. **Read the beginning** (title, abstract, introduction) first using the Read tool with `limit`
 3. **Jump to specific sections** based on user interest using the Read tool with `offset`
@@ -180,7 +190,12 @@ Extract authors, github_repo, project_page from the JSON output.
 
 1. Search: `hf papers search "X" --limit <number>`
 2. Pick the most relevant (by title match + upvotes)
-3. Read: `hf papers read <best_id> > /tmp/paper_<best_id>.md`
+3. Read (try arxiv2md first, fallback to hf):
+   ```bash
+   mkdir -p /tmp/papers
+   bash scripts/arxiv2md.sh <best_id> -o /tmp/papers/<best_id>.md \
+     || hf papers read <best_id> > /tmp/papers/<best_id>.md
+   ```
 4. Summarize key findings
 
 ## When to Use This Skill
