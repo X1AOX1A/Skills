@@ -61,6 +61,9 @@ python .claude/skills/zotero-connector/scripts/import_arxiv.py --dry-run 2301.07
 # Force import (skip duplicate check)
 python .claude/skills/zotero-connector/scripts/import_arxiv.py --force 2301.07041
 
+# Ignore duplicates — silently skip without showing in progress or output
+python .claude/skills/zotero-connector/scripts/import_arxiv.py --ignore-duplicates 2301.07041 2310.06825
+
 # Parallel import (up to 5 concurrent)
 python .claude/skills/zotero-connector/scripts/import_arxiv.py --parallel 3 ID1 ID2 ID3 ID4 ID5
 
@@ -71,6 +74,7 @@ python .claude/skills/zotero-connector/scripts/import_arxiv.py --zofiles-index /
 ### Supported Input Formats
 
 The script accepts arXiv IDs in any of these formats:
+
 - `2301.07041` — new-style ID
 - `2301.07041v2` — with version (version stripped for dedup)
 - `hep-th/0601001` — old-style ID
@@ -98,6 +102,7 @@ The script accepts arXiv IDs in any of these formats:
 ## When to Use This Skill
 
 Use when the user says things like:
+
 - "Import this arXiv paper: 2301.07041"
 - "Add these papers to Zotero"
 - "Batch import arXiv papers"
