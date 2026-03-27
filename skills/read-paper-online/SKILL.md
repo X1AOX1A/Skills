@@ -128,11 +128,7 @@ Two tools are available for fetching paper full text. **Always try `arxiv2md.sh`
 ### Primary: arxiv2md.sh (preferred)
 
 ```bash
-# Save to file (recommended for large papers)
 bash scripts/arxiv2md.sh <PAPER_ID> -o /tmp/papers/<ID>.md
-
-# Output to stdout
-bash scripts/arxiv2md.sh <PAPER_ID>
 ```
 
 Uses the arxiv2md.org API to convert arXiv papers to well-structured markdown with YAML frontmatter, table of contents, and clean formatting. Accepts either a bare arXiv ID (e.g. `2301.07041`) or a full URL.
@@ -173,7 +169,7 @@ Show results in a clean format. Offer to read any paper or import into Zotero.
 ### "看看 hf papers" / "今天有什么新论文"
 
 ```bash
-hf papers list
+hf papers list --date <yyyy-mm-dd>
 ```
 
 Browse mode — just show the table, let the user pick what interests them.
