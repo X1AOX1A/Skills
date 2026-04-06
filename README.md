@@ -11,6 +11,7 @@ Centralized skill management for AI coding tools (Claude Code, Codex CLI, Cursor
 | **zotero-connector** | Import arXiv papers into a running Zotero instance. Supports batch import, duplicate detection, and collection targeting. |
 | **pdf-to-markdown** | Convert PDF files to clean Markdown using pymupdf4llm. |
 | **nano-banana-pro** | Generate and edit images using Google's Nano Banana Pro (Gemini 3 Pro Image) API. Supports text-to-image and image-to-image editing. |
+| **arxiv-figures** | Extract, browse, and download figures from arXiv papers via HTML rendering. Parses figure environments with captions and saves structured metadata. |
 
 ## Structure
 
@@ -26,7 +27,10 @@ skills/                  # Skill definitions (source of truth)
   ├── pdf-to-markdown/
   │   ├── SKILL.md
   │   └── scripts/
-  └── nano-banana-pro/
+  ├── nano-banana-pro/
+  │   ├── SKILL.md
+  │   └── scripts/
+  └── arxiv-figures/
       ├── SKILL.md
       └── scripts/
 skills_table.csv         # Deployment matrix (which skill -> which tool)
@@ -68,6 +72,7 @@ read-paper-local, 1, 1, 1
 zotero-connector, 1, 1, 1
 pdf-to-markdown, 1, 1, 1
 nano-banana-pro, 1, 1, 1
+arxiv-figures, 1, 1, 1
 ```
 
 ## Commands

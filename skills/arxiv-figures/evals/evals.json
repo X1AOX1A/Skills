@@ -1,0 +1,39 @@
+{
+  "skill_name": "arxiv-figures",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm reading paper 2406.11434, can you grab all the figures for me?",
+      "expected_output": "All figures from paper 2406.11434 downloaded to outputs/figures/2406_11434/figures/ with captions.json",
+      "files": [],
+      "assertions": [
+        {"name": "figures_downloaded", "check": "At least 4 .png/.jpg figure files exist in the output directory"},
+        {"name": "captions_json_exists", "check": "A captions.json file is present in the output directory"},
+        {"name": "captions_json_valid", "check": "captions.json contains entries with label, caption, and file/files fields"},
+        {"name": "correct_output_path", "check": "Files are saved under a path containing the arxiv ID"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need the architecture diagram from https://arxiv.org/abs/2312.11805 for my presentation slides",
+      "expected_output": "Figures listed, architecture diagram identified and downloaded, file path provided for use in slides",
+      "files": [],
+      "assertions": [
+        {"name": "figure_downloaded", "check": "At least 1 figure file (.png/.jpg) exists in the output directory"},
+        {"name": "architecture_identified", "check": "The output or captions reference an architecture/overview/framework figure"},
+        {"name": "file_path_reported", "check": "The agent response mentions the specific file path for use in slides"}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What figures does paper 2401.12948 have? Just list them, I don't want to download yet",
+      "expected_output": "Figures listed with captions and panel counts, no files downloaded",
+      "files": [],
+      "assertions": [
+        {"name": "no_files_downloaded", "check": "No image files (.png/.jpg/.svg) were saved to the output directory"},
+        {"name": "figures_listed", "check": "The listing output contains figure labels and captions"},
+        {"name": "listing_saved", "check": "A figures_listing.json or equivalent structured output file exists"}
+      ]
+    }
+  ]
+}
