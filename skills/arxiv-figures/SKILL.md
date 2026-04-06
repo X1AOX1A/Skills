@@ -62,6 +62,9 @@ This outputs JSON to stdout:
 
 Present the figures to the user in a readable format — show the figure number, a short caption summary, and how many panels (sub-images) each figure has.
 
+**Tip — display without downloading**: If the user only needs to *display* figures (e.g., embedding in Markdown, a chat message, or a preview), you can reference the `image_urls` directly from the JSON output — no download needed. For example, use `![Figure 1](https://arxiv.org/html/2406.11434v1/x1.png)` in Markdown. Only proceed to Step 3 when the user needs local files (for slides, offline use, further editing, etc.).
+
+
 ### Step 3: Download selected figures
 
 Based on what the user wants, run with appropriate flags:
