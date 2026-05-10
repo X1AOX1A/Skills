@@ -76,6 +76,10 @@ def main():
     parser.add_argument("-i", "--input", help="Path to the input PDF file")
     parser.add_argument("-o", "--output", help="Path to the output Markdown file (default: same name as input with .md extension)")
     parser.add_argument("--no-toc", action="store_true", help="Disable TOC and frontmatter generation")
+    parser.add_argument("--no-figures", action="store_true", help="Disable image extraction")
+    parser.add_argument("--figures-dir", default="figures", help="Directory name (relative to output md) to store figures (default: figures)")
+    parser.add_argument("--image-format", default="png", choices=["png", "jpg"], help="Extracted image format (default: png)")
+    parser.add_argument("--dpi", type=int, default=200, help="DPI for extracted images (default: 200)")
     args = parser.parse_args()
 
     input_path = pathlib.Path(args.input)
@@ -89,7 +93,29 @@ def main():
         output_path = input_path.with_suffix(".md")
 
     import pymupdf4llm
-    md_text = pymupdf4llm.to_markdown(str(input_path))
+
+    if args.no_figures:
+        md_text = pymupdf4llm.to_markdown(str(input_path))
+    else:
+        figures_dir = (output_path.parent / args.figures_dir).resolve()
+        figures_dir.mkdir(parents=True, exist_ok=True)
+        md_text = pymupdf4llm.to_markdown(
+            str(input_path),
+            write_images=True,
+            image_path=str(figures_dir),
+            image_format=args.image_format,
+            dpi=args.dpi,
+        )
+        # Rewrite any image reference to use `<figures-dir>/<basename>` so
+        # the md is portable regardless of how pymupdf4llm emits the path.
+        figdir = args.figures_dir.rstrip("/")
+
+        def _rewrite(match: re.Match) -> str:
+            alt, path = match.group(1), match.group(2)
+            basename = pathlib.PurePosixPath(path.replace("\\", "/")).name
+            return f"![{alt}]({figdir}/{basename})"
+
+        md_text = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", _rewrite, md_text)
 
     if not args.no_toc:
         toc = extract_toc(md_text)

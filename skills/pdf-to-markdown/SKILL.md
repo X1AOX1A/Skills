@@ -25,6 +25,25 @@ Converts PDF files to clean Markdown using [pymupdf4llm](https://github.com/pymu
 python3 scripts/pdf2md.py -i input.pdf -o output.md
 ```
 
+## Figure Extraction
+
+By default, embedded images are extracted into a `figures/` folder next to the
+output markdown, and references in the md use the portable `figures/xxx.png`
+form regardless of how pymupdf4llm internally names them.
+
+Options:
+
+- `--no-figures` — disable image extraction
+- `--figures-dir DIR` — folder name relative to the md (default: `figures`)
+- `--image-format {png,jpg}` — output image format (default: `png`)
+- `--dpi N` — image rendering DPI (default: `200`)
+
+Example:
+
+```bash
+python3 scripts/pdf2md.py -i paper.pdf --figures-dir assets --image-format jpg --dpi 300
+```
+
 ## When to Use This Skill
 
 Use when the user says things like:
