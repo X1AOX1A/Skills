@@ -30,22 +30,23 @@ load_env() {
 }
 
 # ── Parse CSV ────────────────────────────────────────────────────
-# Output: skill_name,claude_flag,codex_flag,cursor_flag (one per line)
+# Output: skill_name,claude_flag,codex_flag,cursor_flag,tclaude_flag (one per line)
 parse_csv() {
     if [[ ! -f "$CSV_FILE" ]]; then
         echo -e "${RED}Error: skills_table.csv not found: $CSV_FILE${RESET}" >&2
         exit 1
     fi
     local line_num=0
-    while IFS=',' read -r skill claude codex cursor || [[ -n "$skill" ]]; do
+    while IFS=',' read -r skill claude codex cursor tclaude || [[ -n "$skill" ]]; do
         line_num=$((line_num + 1))
         [[ $line_num -eq 1 ]] && continue
         skill="$(echo "$skill" | xargs)"
         claude="$(echo "$claude" | xargs)"
         codex="$(echo "$codex" | xargs)"
         cursor="$(echo "$cursor" | xargs)"
+        tclaude="$(echo "${tclaude:-0}" | xargs)"
         [[ -z "$skill" ]] && continue
-        echo "$skill,$claude,$codex,$cursor"
+        echo "$skill,$claude,$codex,$cursor,${tclaude:-0}"
     done < "$CSV_FILE"
 }
 
@@ -53,9 +54,10 @@ parse_csv() {
 get_target_dir() {
     local tool="$1"
     case "$tool" in
-        claude) echo "$CLAUDE_SKILLS" ;;
-        codex)  echo "$CODEX_SKILLS" ;;
-        cursor) echo "$CURSOR_SKILLS" ;;
+        claude)  echo "$CLAUDE_SKILLS" ;;
+        codex)   echo "$CODEX_SKILLS" ;;
+        cursor)  echo "$CURSOR_SKILLS" ;;
+        tclaude) echo "$TCLAUDE_SKILLS" ;;
     esac
 }
 
@@ -67,18 +69,20 @@ cmd_sync() {
     local created=0 removed=0 skipped=0
     local expected_links=""
 
-    while IFS=',' read -r skill csv_claude csv_codex csv_cursor; do
-        local tools_list="claude codex cursor"
+    while IFS=',' read -r skill csv_claude csv_codex csv_cursor csv_tclaude; do
+        local tools_list="claude codex cursor tclaude"
         local flag_claude="$csv_claude"
         local flag_codex="$csv_codex"
         local flag_cursor="$csv_cursor"
+        local flag_tclaude="$csv_tclaude"
 
         for tool in $tools_list; do
             local flag
             case "$tool" in
-                claude) flag="$flag_claude" ;;
-                codex)  flag="$flag_codex" ;;
-                cursor) flag="$flag_cursor" ;;
+                claude)  flag="$flag_claude" ;;
+                codex)   flag="$flag_codex" ;;
+                cursor)  flag="$flag_cursor" ;;
+                tclaude) flag="$flag_tclaude" ;;
             esac
             local target_dir
             target_dir="$(get_target_dir "$tool")"
@@ -128,7 +132,7 @@ cmd_sync() {
 
     # ── Clean up orphan symlinks ─────────────────────────────────
     local orphan_removed=0
-    for tool in claude codex cursor; do
+    for tool in claude codex cursor tclaude; do
         local target_dir
         target_dir="$(get_target_dir "$tool")"
         [[ ! -d "$target_dir" ]] && continue
@@ -157,18 +161,19 @@ cmd_status() {
     echo -e "${BOLD}${CYAN}▶ Skills deployment status${RESET}"
     echo ""
 
-    printf "  ${BOLD}%-24s %-12s %-12s %-12s${RESET}\n" "SKILL" "CLAUDE" "CODEX" "CURSOR"
-    printf "  %-24s %-12s %-12s %-12s\n" "────────────────────────" "──────────" "──────────" "──────────"
+    printf "  ${BOLD}%-24s %-12s %-12s %-12s %-12s${RESET}\n" "SKILL" "CLAUDE" "CODEX" "CURSOR" "TCLAUDE"
+    printf "  %-24s %-12s %-12s %-12s %-12s\n" "────────────────────────" "──────────" "──────────" "──────────" "──────────"
 
-    while IFS=',' read -r skill csv_claude csv_codex csv_cursor; do
-        local cell_claude cell_codex cell_cursor
+    while IFS=',' read -r skill csv_claude csv_codex csv_cursor csv_tclaude; do
+        local cell_claude cell_codex cell_cursor cell_tclaude
 
-        for tool in claude codex cursor; do
+        for tool in claude codex cursor tclaude; do
             local flag target_dir link_path source_path cell
             case "$tool" in
-                claude) flag="$csv_claude" ;;
-                codex)  flag="$csv_codex" ;;
-                cursor) flag="$csv_cursor" ;;
+                claude)  flag="$csv_claude" ;;
+                codex)   flag="$csv_codex" ;;
+                cursor)  flag="$csv_cursor" ;;
+                tclaude) flag="$csv_tclaude" ;;
             esac
             target_dir="$(get_target_dir "$tool")"
             link_path="$target_dir/$skill"
@@ -195,13 +200,14 @@ cmd_status() {
             fi
 
             case "$tool" in
-                claude) cell_claude="$cell" ;;
-                codex)  cell_codex="$cell" ;;
-                cursor) cell_cursor="$cell" ;;
+                claude)  cell_claude="$cell" ;;
+                codex)   cell_codex="$cell" ;;
+                cursor)  cell_cursor="$cell" ;;
+                tclaude) cell_tclaude="$cell" ;;
             esac
         done
 
-        printf "  %-24s %-22b %-22b %-22b\n" "$skill" "$cell_claude" "$cell_codex" "$cell_cursor"
+        printf "  %-24s %-22b %-22b %-22b %-22b\n" "$skill" "$cell_claude" "$cell_codex" "$cell_cursor" "$cell_tclaude"
     done <<< "$(parse_csv)"
 
     echo ""

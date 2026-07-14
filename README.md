@@ -1,6 +1,6 @@
 # Skills
 
-Centralized skill management for AI coding tools (Claude Code, Codex CLI, Cursor).
+Centralized skill management for AI coding tools (Claude Code, Codex CLI, Cursor, tclaude).
 
 ## Skills
 
@@ -12,6 +12,8 @@ Centralized skill management for AI coding tools (Claude Code, Codex CLI, Cursor
 | **pdf-to-markdown** | Convert PDF files to clean Markdown using pymupdf4llm. |
 | **nano-banana-pro** | Generate and edit images using Google's Nano Banana Pro (Gemini 3 Pro Image) API. Supports text-to-image and image-to-image editing. |
 | **arxiv-figures** | Extract, browse, and download figures from arXiv papers via HTML rendering. Parses figure environments with captions and saves structured metadata. |
+| **paper-suggestions** | Curate a daily/date-range personalized paper digest. Fetches new & cross-listed papers from arXiv + HuggingFace, reads abstracts, matches them against preference topics (config in `preferences.yaml`), and writes a grouped-by-topic Markdown digest with summaries. |
+| **feishu-doc** | Turn a local Markdown file into a Feishu (Lark) Docx cloud document and DM the link via a self-built app bot. Uses the Drive import API + im/v1 message API. |
 
 ## Structure
 
@@ -32,6 +34,14 @@ skills/                  # Skill definitions (source of truth)
   │   └── scripts/
   └── arxiv-figures/
       ├── SKILL.md
+      └── scripts/
+  └── paper-suggestions/
+      ├── SKILL.md
+      ├── preferences.yaml
+      └── scripts/
+  └── feishu-doc/
+      ├── SKILL.md
+      ├── .env.example
       └── scripts/
 skills_table.csv         # Deployment matrix (which skill -> which tool)
 .env                     # Directory path config
@@ -59,6 +69,7 @@ SKILLS=/path/to/this/repo/skills
 CLAUDE_SKILLS=~/.claude/skills
 CODEX_SKILLS=~/.codex/skills
 CURSOR_SKILLS=~/.cursor/skills
+TCLAUDE_SKILLS=~/.tclaude/skills
 ```
 
 ### `skills_table.csv`
@@ -66,13 +77,15 @@ CURSOR_SKILLS=~/.cursor/skills
 Controls which skills are deployed to which tools. Set `1` to enable, `0` to disable:
 
 ```csv
-skill, claude, codex, cursor
-read-paper-online, 1, 1, 1
-read-paper-local, 1, 1, 1
-zotero-connector, 1, 1, 1
-pdf-to-markdown, 1, 1, 1
-nano-banana-pro, 1, 1, 1
-arxiv-figures, 1, 1, 1
+skill, claude, codex, cursor, tclaude
+read-paper-online, 1, 1, 1, 1
+read-paper-local, 1, 1, 1, 1
+zotero-connector, 1, 1, 1, 1
+pdf-to-markdown, 1, 1, 1, 1
+nano-banana-pro, 1, 1, 1, 1
+arxiv-figures, 1, 1, 1, 1
+paper-suggestions, 1, 1, 1, 1
+feishu-doc, 1, 1, 1, 1
 ```
 
 ## Commands

@@ -1,1 +1,5 @@
 .DS_Store
+# Skill secrets
+skills/*/.env
+__pycache__/
+*.pyc

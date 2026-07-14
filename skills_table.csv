@@ -1,7 +1,9 @@
-skill, claude, codex, cursor
-read-paper-local, 1, 1, 1
-zotero-connector, 1, 1, 1
-pdf-to-markdown, 1, 1, 1
-nano-banana-pro, 1, 1, 1
-read-paper-online, 1, 1, 1
-arxiv-figures, 1, 1, 1
+skill, claude, codex, cursor, tclaude
+read-paper-local, 1, 1, 1, 1
+zotero-connector, 1, 1, 1, 1
+pdf-to-markdown, 1, 1, 1, 1
+nano-banana-pro, 1, 1, 1, 1
+read-paper-online, 1, 1, 1, 1
+arxiv-figures, 1, 1, 1, 1
+paper-suggestions, 1, 1, 1, 1
+feishu-doc, 1, 1, 1, 1
