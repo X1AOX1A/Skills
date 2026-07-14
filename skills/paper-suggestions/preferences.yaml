@@ -1,0 +1,60 @@
+# preferences.yaml — 论文推荐偏好配置
+#
+# 每个 topic 会成为输出 md 中的一个分组小节。
+#   name     : 分组标题(可中英文)
+#   emoji    : 分组标题前的图标(可选,纯装饰)
+#   keywords : 供初筛的关键词(标题/摘要命中即候选;最终相关性由 Claude 读摘要判断)
+#   desc     : 给 Claude 的语义说明 —— 这个领域到底关心什么,用来判断"真正相关"
+#
+# 直接编辑本文件即可增删领域。命中的论文全部列出(不设上限)。
+
+topics:
+  - name: Agent
+    emoji: "🤖"
+    keywords: [agent, agentic, multi-agent, tool use, tool-use, planning, ReAct, orchestration, LLM agent]
+    desc: LLM 智能体 —— 规划、工具调用、多智能体协作、长程任务执行与调度。
+
+  - name: Agent World Model
+    emoji: "🌍"
+    keywords: [world model, latent dynamics, model-based, simulation, environment model, predictive model]
+    desc: 智能体的世界模型 —— 环境/动态建模、基于模型的规划与推理、可预测的内部表征。
+
+  - name: 后训练 (Post-training)
+    emoji: "🔧"
+    keywords: [post-training, RLHF, RLAIF, DPO, PPO, GRPO, reward model, preference, fine-tuning, SFT, distillation, alignment]
+    desc: 预训练之后的对齐与能力提升 —— RL 类方法、偏好优化、奖励建模、SFT/蒸馏、对齐。
+
+# ---- 输出设置 ----
+output:
+  # 生成的 md 存放目录(文件名自动用日期,如 2026-07-13.md)。~ 会展开为家目录。
+  dir: "~/Local/CACHE/paper-suggestions"
+  # 每篇论文的摘要风格:rich(摘要+亮点+链接) | oneline(一句话+链接)
+  style: rich
+  # 是否把 HF-only 论文(不在 arxiv 类目内)纳入匹配。fetch 脚本会自动为它们补取摘要
+  # (一次批量 arXiv API 调用),无需外部脚本。设为 false 则只看 arxiv 类目内的论文。
+  enrich_hf_only: true
+
+# ---- 其他推荐(兜底小节)----
+# 除了上面已定义的 topics,允许 Claude 自主挑选"不属于任何已有领域、但仍值得一读"的论文,
+# 放进结尾的一个额外小节。目的是发现偏好之外的亮点,避免视野被 topics 框死。
+other:
+  enabled: true
+  title: "其他推荐"        # 该小节标题
+  emoji: "✨"
+  max: 5                   # 最多推荐几篇(精选,宁缺毋滥;0 或没命中则不出现该小节)
+  # 给 Claude 的入选标准:什么样的"领域外"论文才值得破格推荐
+  desc: >
+    不匹配任何已定义 topic,但具备以下之一才入选:方法/思路有明显新意、当日 HF 热度突出、
+    可能引发我(偏好在 agent / world model / 后训练)未来兴趣、或对领域有广泛影响。
+    每篇必须注明"为什么推荐(为何破格)"。挑不出就留空,不要凑数。
+
+# ---- 可选:生成后上传到飞书云文档 ----
+# 依赖 feishu-doc skill(不内部化)。启用后,写完 digest 会额外跑一行 push_doc.py。
+# 收件人 / App 凭据等在 feishu-doc 自己的 .env 里配;这里只放开关与常用参数。
+# 详见 feishu-doc 的 SKILL.md。
+feishu:
+  enabled: true                 # true 时才上传
+  folder_name: "PaperSuggess"    # 存到飞书我的空间下的该文件夹(不存在会创建);留空则存根目录
+  extra_args: ""                 # 追加给 push_doc.py 的参数,如 "--open-id ou_xxx --grant view"
+
+

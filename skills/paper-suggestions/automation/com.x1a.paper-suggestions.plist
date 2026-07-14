@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Rename the Label if you fork this; it must match the filename (minus .plist). -->
+  <key>Label</key>
+  <string>com.x1a.paper-suggestions</string>
+
+  <!-- Runs the launcher script. Edit the path if your skills repo lives elsewhere. -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/x1a/Local/CODES/Skills/skills/paper-suggestions/automation/run_daily.sh</string>
+  </array>
+
+  <!-- Fire every day at 12:00 local time. Change Hour/Minute to reschedule. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key><integer>12</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+
+  <!-- If the Mac was asleep/off at 12:00, run once as soon as it wakes. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <!-- launchd-level stdout/stderr (the script itself also writes a per-day log). -->
+  <key>StandardOutPath</key>
+  <string>/Users/x1a/Local/CACHE/paper-suggestions/logs/launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/x1a/Local/CACHE/paper-suggestions/logs/launchd.err.log</string>
+</dict>
+</plist>
