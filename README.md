@@ -14,6 +14,7 @@ Centralized skill management for AI coding tools (Claude Code, Codex CLI, Cursor
 | **arxiv-figures** | Extract, browse, and download figures from arXiv papers via HTML rendering. Parses figure environments with captions and saves structured metadata. |
 | **paper-suggestions** | Curate a daily/date-range personalized paper digest. Fetches new & cross-listed papers from arXiv + HuggingFace, reads abstracts, matches them against preference topics (config in `preferences.yaml`), and writes a grouped-by-topic Markdown digest with summaries. |
 | **feishu-doc** | Turn a local Markdown file into a Feishu (Lark) Docx cloud document and DM the link via a self-built app bot. Uses the Drive import API + im/v1 message API. |
+| **init-agent-project** | Initialize or align repository-level AI collaboration scaffolding: `AGENT.md`, a delegating `CLAUDE.md` stub, and `.agent/` memory/workspace directories. Supports new repos, existing repos, and convention migrations. |
 
 ## Structure
 
@@ -43,6 +44,9 @@ skills/                  # Skill definitions (source of truth)
       ├── SKILL.md
       ├── .env.example
       └── scripts/
+  └── init-agent-project/
+      ├── SKILL.md
+      └── references/
 skills_table.csv         # Deployment matrix (which skill -> which tool)
 .env                     # Directory path config
 skills_sync.sh           # Symlink manager
