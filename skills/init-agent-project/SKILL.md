@@ -1,6 +1,6 @@
 ---
 name: init-agent-project
-description: Initialize or align repository-level AI collaboration scaffolding with AGENT.md, a delegating CLAUDE.md compatibility stub, and .agent/. Use when a user asks to bootstrap a new repository, onboard an existing repository, migrate Claude conventions, create project memory/workspace directories, or standardize where stable collaboration preferences versus changing progress and paths are recorded.
+description: Initialize or align repository-level AI collaboration scaffolding with AGENT.md, a delegating CLAUDE.md compatibility stub, and .agent/. Use when a user asks to bootstrap a new repository, onboard an existing repository, migrate Claude conventions, create project memory/workspace directories, or standardize stable collaboration preferences and a newest-first dated project progress log.
 ---
 
 # Initialize Agent Project
@@ -52,16 +52,18 @@ Read `AGENT.md`.
 
 Keep `AGENT.md` as the single source of truth. Do not duplicate collaboration rules in `CLAUDE.md`.
 
-#### `.agent/memory/project_progress.md`: onboarding and changing state
+#### `.agent/memory/project_progress.md`: dated changing state
 
 Use this file for:
 
-- a top-level note explaining that it is both a progress log and path memo;
-- frequently reused project, data, output, or external dependency paths;
+- a top-level note explaining that it is a newest-first dated progress log;
 - dated progress, decisions, verified conclusions, pitfalls, and current state;
-- file maps that prevent repeated repository discovery.
+- a short `相关目录` block inside the relevant dated entry when paths materially help continuation;
+- exact paths for external dependencies or reference files that cannot be located reliably from the repository itself.
 
-Order dated entries newest first. Keep one section per day and do not rewrite older entries. Record genuine project state, not administrative narration such as “created AGENT.md” unless that change itself matters to the project. Do not invent completed work or future plans.
+Do not create a global “常用路径速查” or a repository-wide file inventory by default. For project-owned code, outputs, docs, and workspaces, prefer a few repository-relative directories over detailed internal filenames. When an external file itself is authoritative—such as a benchmark, schema, submission-format example, or platform integration note—record its complete absolute path so a later agent can locate the exact dependency.
+
+Order dated entries newest first. Keep one section per day and do not rewrite older entries. Record genuine project state, not administrative narration such as “created AGENT.md” unless that change itself matters to the project. Do not invent completed work or future plans. If the file already has a different user-approved style, preserve it unless the user explicitly asks to align or migrate it.
 
 If the file already exists, preserve history and add or revise only what the user authorized. Follow its established style.
 
@@ -109,7 +111,7 @@ Perform documentation-level validation:
 1. Confirm the expected files and directories exist and are non-empty where applicable.
 2. Confirm root `CLAUDE.md` delegates to `AGENT.md` and contains no duplicate policy text.
 3. Search hidden files for stale names after an explicit directory migration, such as old `.claude/` references.
-4. Check that every path mentioned in the new files is intentional. Distinguish currently unavailable external paths from broken repository-relative links.
+4. Check that every path mentioned in the new files is intentional: internal paths should normally be concise repository-relative directories, while necessary external files should have exact absolute paths. Distinguish currently unavailable external paths from broken repository-relative links.
 5. Confirm `AGENT.md` contains stable preferences rather than a progress dump.
 6. Confirm `project_progress.md` contains no fabricated history and follows newest-first ordering.
 7. Run `git diff --check` when inside Git. Do not run application tests for documentation-only initialization unless another change requires them.
@@ -138,15 +140,18 @@ Use these as outlines, not fixed text.
 ```markdown
 # 项目进展 — <项目名>
 
-> 最新在最上，旧条目不改写；本文件也保存常用路径，避免重复查找。
-
-## 常用路径速查
+> 最新在最上，一天一个 section；按日期记录阶段结论、关键决策、踩坑、相关目录和下一步。
 
 ## YYYY-MM-DD
 
+### 相关目录
+
+- 项目内部只列少量目录：`scripts/<stage>/`、`outputs/<stage>/`
+- 必须精确定位的外部参考文件：`/absolute/external/path/reference.jsonl`
+
 ### <本阶段主题>
 
-**背景 / 口径 / 结果 / 决策 / 踩坑 / 关键文件地图**
+**背景 / 口径 / 结果 / 决策 / 踩坑 / 下一步**
 ```
 
 Adapt sections to the repository. Omit empty or irrelevant headings.
@@ -156,4 +161,4 @@ Adapt sections to the repository. Omit empty or irrelevant headings.
 Real files from a working repository, useful for judging structure, tone, and the file boundary — study them, do not copy their content:
 
 - `references/example-AGENT.md` — a concise, stable collaboration contract (goal, collaboration style, task/engineering principles, doc & memory conventions) with no volatile status.
-- `references/example-project_progress.md` — a newest-first progress log that also serves as a path memo (top "常用路径速查" block, then dated sections with background / findings / decisions / pitfalls / file maps).
+- `references/example-project_progress.md` — a concise newest-first dated progress log with per-day related directories, exact paths only for necessary external dependencies, and no global path inventory.
